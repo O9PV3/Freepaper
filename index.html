@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Free Writer</title>
+    <style>
+        /* 全体の設定 */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            font-family: sans-serif;
+            background-color: #ffffff;
+            overflow: hidden;
+        }
+
+        /* 入力エリアの設定 */
+        #writing-area {
+            width: 80%;
+            height: 80%;
+            margin: 5% auto 0 auto;
+            border: none;
+            outline: none;
+            resize: none;
+            font-size: 18px;
+            line-height: 1.8;
+            color: #333;
+            display: block;
+            background-color: transparent;
+        }
+
+        textarea::placeholder { color: #ddd; }
+
+        /* 保存ボタンの設定 */
+        #save-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 12px 24px;
+            background-color: #f0f0f0;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            color: #666;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: 0.3s;
+            opacity: 0.6;
+        }
+
+        #save-btn:hover {
+            opacity: 1;
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+
+    <textarea id="writing-area" placeholder="思考をそのまま書き出しましょう..."></textarea>
+    <button id="save-btn">日付名で保存</button>
+
+    <script>
+        document.getElementById('save-btn').addEventListener('click', function() {
+            const text = document.getElementById('writing-area').value;
+            
+            if (!text) {
+                alert("まだ何も書かれていません");
+                return;
+            }
+
+            // 日付を取得してファイル名を作る部分
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0'); 
+            const day = String(now.getDate()).padStart(2, '0');
+            
+            // ファイル名: 2023-10-27.md
+            const fileName = `${year}-${month}-${day}.md`;
+
+            // ダウンロード処理
+            const blob = new Blob([text], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+    </script>
+</body>
+</html>
